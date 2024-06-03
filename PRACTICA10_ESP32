@@ -1,0 +1,166 @@
+#include <BluetoothSerial.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+Adafruit_SSD1306 display (128, 64, 23, 18, 16, 17, 5); //ESP32
+BluetoothSerial SerialBT;
+const char* BTnombre = "ESP32_PRACT10";
+void setup()
+{
+  Serial.begin(9600);
+  SerialBT.begin(BTnombre);
+  display.begin(SSD1306_SWITCHCAPVCC);
+  pinMode(2, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(14, OUTPUT);
+  pinMode(27, OUTPUT);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(6, 0);
+  display.println("-MICROCONTROLADORES-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 10);
+  display.println("-HUITZILIHUITL-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 0);
+  display.println("-JESUS_EMMANUEL-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 10);
+  display.println("-JORGE_ALBERTO-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(25, 0);
+  display.println("-PRACTICA_10-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(25, 10);
+  display.println("-Bluetooth-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(500);
+  display.clearDisplay();
+  display.display();
+}
+void loop ()
+{
+  int var = analogRead(A0);
+  Serial.println (var);
+  SerialBT.println (var);
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.println("-EST_SAL-");
+   display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(15, 55);
+  display.println("-NO COMANDO-");
+  display.display();
+
+  if (SerialBT.available()) // mientras el BLUETOOTH se encuentre disponible haz lo siguiente
+  {
+    char dato = SerialBT.read(); // lo que sea que leas por el puerto Bluetooth almacenalo en la variable dato la cual es de tipo CHAR
+    Serial.println(dato);
+    switch (dato) {
+      case 'a':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA PIN2-");
+        display.display();
+        digitalWrite(2 , HIGH);
+
+        break;
+      case 'b':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA2 OFF-");
+        display.display();
+        digitalWrite(2 , LOW);
+        break;
+      case 'c':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA14 ON-");
+        display.display();
+        digitalWrite(14 , HIGH);
+        break;
+      case 'd':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA14 OFF-");
+        display.display();
+        digitalWrite(14 , LOW);
+        break;
+      case 'e':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA27 ON-");
+        display.display();
+        digitalWrite(27 , HIGH);
+        break;
+      case 'f':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA27 OFF-");
+        display.display();
+        digitalWrite(27 , LOW);
+        break;
+      case 'g':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA13 ON-");
+        display.display();
+        digitalWrite(13 , HIGH);
+        break;
+      case 'h':
+        display.clearDisplay();
+        display.setTextColor(WHITE);
+        display.setTextSize(1);
+        display.setTextColor(WHITE);
+        display.setCursor(15, 55);
+        display.println("-SALIDA13 OFF-");
+        display.display();
+        digitalWrite(13 , LOW);
+        break;
+    }
+  }
+}
