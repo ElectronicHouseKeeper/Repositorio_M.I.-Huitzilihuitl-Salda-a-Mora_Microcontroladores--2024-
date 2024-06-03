@@ -1,0 +1,251 @@
+// Crear objeto de pantalla OLED
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <SPI.h>
+#include <WiFi.h>
+#include "time.h"
+
+// Definir tamaño del OLED (puede variar según el modelo)
+#define SCREEN_WIDTH        128
+#define SCREEN_HEIGHT       64
+
+// Definir pines SPI del OLED
+#define OLED_MOSI           23
+#define OLED_CLK            18
+#define OLED_DC             16
+#define OLED_CS             5
+#define OLED_RESET          17
+
+// Definir pines de los botones
+#define BUTTON_MINUTE_UP    34
+#define BUTTON_MINUTE_DOWN  35
+
+// Crear objeto de pantalla OLED
+Adafruit_SSD1306 display (128, 64, 23, 18, 16, 17, 5); //ESP32
+// Definimos las fuentes de letra
+#include <Fonts/FreeMono12pt7b.h>
+#include <Fonts/FreeMono24pt7b.h>
+#include <Fonts/FreeSans12pt7b.h>
+#include <Fonts/FreeSans24pt7b.h>
+#include <Fonts/FreeSansBold12pt7b.h >
+#include <Fonts/FreeSansBold24pt7b.h >
+#include <Fonts/FreeSerif12pt7b.h>
+#include <Fonts/FreeSerif24pt7b.h>
+// Notas Musicales para que suenen como alarma
+#define Do 1911
+#define DoS 1803
+#define Re 1702
+#define ReS 1607
+#define Mi 1516
+#define Fa 1431
+#define FaS 1351
+#define Sol 1275
+#define SolS 1203
+#define La 1136
+#define LaS 1072
+#define Si 1012
+#define Do_2 955
+//const char* ssid = "Emma_1";
+//const char* password = "123456789";
+const char* ssid = "ITS-Alumnos";
+const char* password = "xfvF.PzRN$";
+//const char* ssid = "Megacable_2.4G_1326";
+//const char* password = "gfsrDtzX";
+const char* ntpServer = "pool.ntp.org"; // Dirección del servidor NTP
+const long gmtOffset_sec = -21600; // Zona horaria
+const int daylightOffset_sec = 0; // Ajuste de horario de verano
+
+char timeHour[3]; // Variable de la hora
+char timeMinute[3]; // Variable de minutos
+char timeSecond[3]; // Variable de segundos
+char timeWeekDay[10]; // Variable del día de la semana
+char timeMonth[10]; // Variable del mes
+char timeMonthDay[3]; // Variable del día del mes
+
+// Ajuste de la hora de la alarma
+volatile int alarmHour = 0;
+volatile int alarmMinute = 0;
+int MELODIA[] = {Do, Re, Mi, Do, Sol, Sol, La, Sol, La, Do_2, Fa, La, Fa}; // Arreglo de melodías
+int TIEMPOS[] = {100, 80, 80, 80, 75, 75, 75, 60, 60, 60, 50, 80, 50}; // Arreglo de tiempos
+
+void IRAM_ATTR handleHourUp() {
+  alarmHour = (alarmHour + 1) % 24;
+}
+
+void IRAM_ATTR handleHourDown() {
+  alarmHour = (alarmHour - 1 + 24) % 24;
+}
+
+void IRAM_ATTR handleMinuteUp() {
+  alarmMinute = (alarmMinute + 1) % 60;
+}
+
+void IRAM_ATTR handleMinuteDown() {
+  alarmMinute = (alarmMinute - 1 + 60) % 60;
+}
+
+void setup() {
+  display.begin(SSD1306_SWITCHCAPVCC);
+  pinMode(13, OUTPUT); // Salida al transistor
+  WiFi.begin(ssid,password); // Inicialización para conexión de internet
+  Serial.begin(9600);
+
+  // Inicializar pantalla OLED
+
+    // Obtención del tiempo
+   // Configurar botones e interrupciones
+  pinMode(33                                     , INPUT_PULLUP);
+  pinMode(36                                      , INPUT_PULLUP);
+  pinMode(BUTTON_MINUTE_UP                       , INPUT_PULLUP);
+  pinMode(BUTTON_MINUTE_DOWN                     , INPUT_PULLUP);
+  attachInterrupt(33, handleHourUp                    , FALLING);
+  attachInterrupt(36, handleHourDown                   , FALLING);
+  attachInterrupt(BUTTON_MINUTE_UP, handleMinuteUp    , FALLING);
+  attachInterrupt(BUTTON_MINUTE_DOWN, handleMinuteDown, FALLING);
+
+  display.clearDisplay(); //limpia display
+  display.setTextSize(1);// Normal 1:1 pixel scale
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.print("Conectando a ");
+  display.setCursor(0, 16);
+  display.print(ssid);
+  display.display();
+  WiFi.begin(ssid, password);
+  int x = 0;
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(100);
+    Serial.print(".");
+    display.setCursor(x, 32);
+    display.print(".");
+    display.display();
+    x = x + 5;
+  }
+  Serial.println(" CONECTADO");
+  display.setCursor(0, 48);
+  display.print("CONECTADO");
+  display.display();
+  delay(300);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(6, 0);
+  display.println("-MICROCONTROLADORES-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 10);
+  display.println("-HUITZILIHUITL-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 0);
+  display.println("-JESUS_EMMANUEL-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 10);
+  display.println("-JORGE_ALBERTO-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(25, 0);
+  display.println("-PRACTICA_11-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(25, 10);
+  display.println("-CLK_WIFI-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(500);
+  display.clearDisplay();
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  printLocalTime();
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+}
+
+void loop() {
+display.clearDisplay();
+  printLocalTime(); // Función para mostrar el tiempo
+  alarmDisplay(); // Función para desplegar el tiempo ajustado a la alarma
+  alarmClock(); // Función para comparar el tiempo y accionar la alarma
+  
+}
+
+void printLocalTime() {
+  struct tm timeinfo;
+    getLocalTime(&timeinfo);
+  if (!getLocalTime(&timeinfo)) {
+    Serial.println("FALLE EN OBTENER Tiempo");
+    return;
+  }
+  // Se guardan las variables para poder ser comparadas
+ 
+  strftime(timeHour, 3, "%H", &timeinfo);
+  strftime(timeMinute, 3, "%M", &timeinfo);
+  strftime(timeSecond, 3, "%S", &timeinfo);
+  strftime(timeMonthDay, 3, "%d", &timeinfo);
+  strftime(timeWeekDay, 10, "%A", &timeinfo);
+  strftime(timeMonth, 10, "%B", &timeinfo);
+  // Despliegue del tiempo en la pantalla
+  display.drawLine(0, 15, 150, 15, WHITE);
+  display.setTextSize(2);
+  display.setCursor(25, 0);
+  display.print(timeHour);
+  display.print(":");
+  display.print(timeMinute);
+  display.setTextSize(1);
+  display.setCursor(0, 45);
+  display.print(timeMonthDay);
+  display.setCursor(27, 45);
+  display.print(timeMonth);
+  display.setCursor(60, 45);
+  display.print(timeWeekDay);
+  display.display();
+}
+
+void alarmClock() {
+  // Ciclo para preguntar por el tiempo y accionar la alarma
+  if ((atoi(timeHour) == alarmHour) && (atoi(timeMinute) == alarmMinute)) {
+  display.setCursor(17, 22);
+  display.setTextSize(2);
+  display.print("LEVANTESE");
+    for (int m = 0; m < 13; m++) {
+      for (int t = 0; t < TIEMPOS[m]; t++) {
+        digitalWrite(13, 0);
+        delayMicroseconds(MELODIA[m]); // Ciclo "for" para hacer sonar las melodías
+        digitalWrite(13, 1);
+        delayMicroseconds(MELODIA[m]);
+      }
+    }
+    
+    display.display(); delay(1000); //display.clearDisplay();
+  }
+   digitalWrite(13, 0);
+}
+
+void alarmDisplay() {
+  // Función para desplegar
+  display.drawLine(0, 53, 150, 53, WHITE);
+  display.setCursor(0, 55);
+  display.setTextSize(1);
+  display.print("Sonara a las -> ");
+  if (alarmHour < 10) display.print('0');
+  display.print(alarmHour);
+  display.print(":");
+  if (alarmMinute < 10) display.print('0');
+  display.println(alarmMinute);
+  display.display();
+//  display.clearDisplay();
+}
