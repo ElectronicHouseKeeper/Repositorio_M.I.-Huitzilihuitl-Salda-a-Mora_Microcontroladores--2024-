@@ -1,0 +1,162 @@
+#include <WiFi.h>
+const char* ssid = "ITS-Alumnos";
+const char* password = "xfvF.PzRN$";
+String nom = "Ingeneria Electronica & Control";
+WiFiServer server(80);
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(2, OUTPUT); // set the LED pin mode
+  pinMode(13, OUTPUT); // set the LED pin mode
+  pinMode(14, OUTPUT); // set the LED pin mode
+  pinMode(27, OUTPUT); // set the LED pin mode
+  delay(10);
+  // We start by connecting to a WiFi network
+  Serial.println();
+  Serial.println();
+  Serial.print("CONECTANDO A: "); Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi CONECTADO.");
+  Serial.println("DIRECCION IP LOCAL: ");
+  Serial.println(WiFi.localIP());
+  server.begin();
+}
+void loop() {
+  WiFiClient client = server.available(); // Escuchar a los clientes entrantes
+  if (client) // Si se tiene un cliente
+  {
+    Serial.println("NUEVO CLIENTE:"); // Se imprime mensaje en monitor serial
+    String currentLine = ""; // Crear una cadena para contener los datos entrantes del cliente
+    while (client.connected()) // Bucle mientras el cliente este conectado
+    {
+      if (client.available()) // Si hay caracteres para leer del cliente,
+      {
+        char c = client.read(); // lee el caracter
+        Serial.write(c); // y lo imprime en el monitor serial
+        if (c == '\n') // si el caracter es una nueva linea
+        {
+          // si la línea actual está en blanco, tienes dos caracteres de nueva línea seguidos.
+          // ese es el final de la solicitud HTTP del cliente, así que el servidor envia una respuesta:
+          if (currentLine.length() == 0)
+      {
+            // Los encabezados HTTP siempre comienzan con un código de respuesta (por ejemplo, HTTP / 1.1 200 OK)
+            // y un tipo de contenido para que el cliente sepa lo que viene, luego una línea en blanco:
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-type:text/html");
+            client.println();
+            // La respuesta HTTP sigue con el encabezado y el resto del codigo en lenguaje HTML:
+            client.println("<!DOCTYPE html>");
+            client.println("<html>");
+            client.println("<head>");
+            client.println("<title> EMMANUEL & ALBERTO </title>");
+            client.println("</head>");
+            client.println("<body bgcolor = 'GREY'>");
+            client.println("<p style='text-align: center; color:white; font-size:100px; border: 10px solid white; background:#000000; font-family:Times New Roman;'>INSTITUTO TECNOLOGICO DE SALTILLO</p>");
+            client.println("<img style='width:1000px'src=\"https://i0.wp.com/atiempo.tv/wp-content/uploads/2020/05/tec-saltillo.jpg?fit=3072%2C2048&ssl=1/large.JPG\"><br><br>");
+            client.println("<h1 style='color :white;'><left> Instituto Nacional de Mexico_" + nom + "_MICROCONTROLADORES_</left></h1>");
+            client.println("<h1 style='color :white;'><left>DEPARTAMENTO ELECTRICA & ELECTRONICA</left></h1>");
+            client.println("<h1 style='color :white;'><left>PROF:M.I. Huitzilihuitl Saldana mora</left></h1>");
+            client.println("<h2 style='color :white;'><left>ESP32_SERVIDOR</left></h2>");
+            client.println("<h2 style='color :white;'><left>JESUS EMMANUEL FLORES ALBERTO ALVARADO</left></h2>");
+            client.println("<p style='text-align: center; color:white; font-size:100px; border: 10px solid white; background:#000000; font-family:Times New Roman;'>PRACTICA_12</p>");
+            client.println("<img style='width:1000px'src=\"https://i0.wp.com/atiempo.tv/wp-content/uploads/2020/05/tec-saltillo.jpg?fit=3072%2C2048&ssl=1/large.JPG\"><br><br>");
+            client.print("Presiona <a href=\"/H\">AQUI</a> para encender el LED 2.<br><br>");
+            client.print("Presiona <a href=\"/L\">AQUI</a> para apagar el LED 2.<br><br>");
+            client.print("Presiona <a href=\"/U\">AQUI</a> para encender el LED 13.<br><br>");
+            client.print("Presiona <a href=\"/B\">AQUI</a> para apagar el LED 13.<br><br>");
+            client.print("Presiona <a href=\"/Z\">AQUI</a> para encender el LED 14.<br><br>");
+            client.print("Presiona <a href=\"/P\">AQUI</a> para apagar el LED 14.<br><br>");
+            client.print("Presiona <a href=\"/O\">AQUI</a> para encender el LED 27.<br><br>");
+            client.print("Presiona <a href=\"/E\">AQUI</a> para apagar el LED 27.<br><br>");
+           // client.println("<a href='/H'><buttonstyle='padding: 50px 100px; color:green; font-size:25px; background:black'>ENCENDER</button></a>");
+           // client.println("<a href='/L'><buttonstyle='color:#FF0000; font-size:25px; background:#808000;'>APAGAR</button></a><br /> ");
+                          
+                           
+            if (digitalRead(2)) client.println("<pstyle='color:green; font-size:40px'>LED2->[ON]</p>");
+            else client.println("<p style='color:BLACK;font-size:40px; blackground:#808000'>LED2->[OFF]</p>");
+            client.println("</body>");
+            client.println("</html>");
+            //La respuesta HTTP termina con otra línea enblanco:
+            client.println();
+            // salimos del bucle while:
+            if (digitalRead(13)) client.println("<pstyle='color:green; font-size:40px'>LED13->[ON]</p>");
+            else client.println("<p style='color:BLACK;font-size:40px; blackground:#808000'>LED13->[OFF]</p>");
+            client.println("</body>");
+            client.println("</html>");
+            //La respuesta HTTP termina con otra línea enblanco:
+            client.println();
+            // salimos del bucle while:
+            if (digitalRead(14)) client.println("<pstyle='color:green; font-size:40px'>LED14->[ON]</p>");
+            else client.println("<p style='color:BLACK;font-size:40px; blackground:#808000'>LED14->[OFF]</p>");
+            client.println("</body>");
+            client.println("</html>");
+            //La respuesta HTTP termina con otra línea enblanco:
+            client.println();
+            // salimos del bucle while:
+            if (digitalRead(27)) client.println("<pstyle='color:green; font-size:40px'>LED27->[ON]</p>");
+            else client.println("<p style='color:BLACK;font-size:40px; blackground:#808000'>LED27->[OFF]</p>");
+            client.println("</body>");
+            client.println("</html>");
+            //La respuesta HTTP termina con otra línea enblanco:
+            client.println();
+            // salimos del bucle while:
+            break;
+          }
+          else
+          {
+            // si tienes una nueva línea, borra la línea actual:
+            currentLine = "";
+          }
+        }
+        else if (c != '\r')
+        {
+          // si tienes algo más que un carácter de retorno de carro,
+          // lo agregamos al final de la línea actual
+          currentLine += c;
+        }
+        // Verifica si la direccion del cliente fue "GET /H" o "GET /L":
+        if (currentLine.endsWith("GET /H"))
+        {
+          digitalWrite(2, HIGH); // GET /H turns the LED on
+        }
+        if (currentLine.endsWith("GET /L"))
+        {
+          digitalWrite(2, LOW); // GET /L turns the LED off
+        }
+        if (currentLine.endsWith("GET /U"))
+        {
+          digitalWrite(13, HIGH); // GET /H turns the LED on
+        }
+        if (currentLine.endsWith("GET /B"))
+        {
+          digitalWrite(13, LOW); // GET /L turns the LED off
+        }
+        if (currentLine.endsWith("GET /Z"))
+        {
+          digitalWrite(14, HIGH); // GET /H turns the LED on
+        }
+        if (currentLine.endsWith("GET /P"))
+        {
+          digitalWrite(14, LOW); // GET /L turns the LED off
+        }
+        if (currentLine.endsWith("GET /O"))
+        {
+          digitalWrite(27, HIGH); // GET /H turns the LED on
+        }
+        if (currentLine.endsWith("GET /E"))
+        {
+          digitalWrite(27, LOW); // GET /L turns the LED off
+        }
+      }
+    }
+    // Cierra conexion
+    client.stop();
+    Serial.println("Client Disconnected.");
+  }
+}
