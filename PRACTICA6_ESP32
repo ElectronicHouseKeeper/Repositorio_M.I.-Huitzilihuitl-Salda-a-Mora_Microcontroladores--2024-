@@ -1,0 +1,150 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+Adafruit_SSD1306 display (128, 64, 23, 18, 16, 17, 5); //ESP32
+int volatile pulsos = 0;
+int lectura         = 0;
+int Horas           = 10;
+int Minutos         = 59;
+int segundos        = 58;
+void INCREMENTO()
+{
+  pulsos++;
+  }
+void setup() {
+  pinMode(12, INPUT_PULLUP);
+  pinMode(2 , OUTPUT);
+  display.begin(SSD1306_SWITCHCAPVCC);
+  display.clearDisplay();
+  //display.drawBitmap(0  , 10, ABB_MONO, 128, 64, WHITE);
+  //display.drawBitmap(30 , 5, ABB,      128, 64, WHITE);
+  display.display();
+  delay(500);
+  display.clearDisplay();
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(6, 0);
+  display.println("-MICROCONTROLADORES-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 10);
+  display.println("-HUITZILIHUITL-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 0);
+  display.println("-JESUS_EMMANUEL-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 10);
+  display.println("-JORGE_ALBERTO-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(25, 0);
+  display.println("-PRACTICA_6-");
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(25, 10);
+  display.println("-RELOJ_AC-");
+  display.drawLine(0, 20, 150, 20, WHITE);
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.display();
+  attachInterrupt(digitalPinToInterrupt(12), INCREMENTO, FALLING);
+  Serial.begin(9600);
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 43);
+  display.println(Horas);
+  display.display();
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(50, 43);
+  display.println(Minutos);
+  display.display();
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(90, 43);
+  display.println(segundos);
+  display.display();
+}
+
+void loop() {
+  if (pulsos >= 120)
+  {
+    Parpadea(10);
+    segundos++;
+    pulsos = 0;
+    if (segundos == 60)
+    {
+      Minutos++;
+      segundos = 0;
+      if (Minutos == 60)
+      {
+        Horas++;
+        Minutos = 0;
+        //        if ()
+        {
+          // codogo de horas
+        }
+      }
+    }
+  }
+     Mostrar(segundos, Minutos , Horas);
+  
+
+  
+}
+void Mostrar(int Segundos , int Minutos , int Horas) {
+  Serial.println("bueno");
+  display.drawRect(43, 43, 4, 4, WHITE);
+  display.drawRect(43, 55, 4, 4, WHITE);
+  display.drawRect(84, 43, 4, 4, WHITE);
+  display.drawRect(84, 55, 4, 4, WHITE);
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(8, 43);
+  display.println(Horas);
+  display.display();
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(50, 43);
+  display.println(Minutos);
+  display.display();
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(90, 43);
+  display.println(segundos);
+  display.display();
+  delay(100);
+  display.clearDisplay();
+}
+void Parpadea(int input) {
+  display.fillRect(43, 43, 4, 4, WHITE);
+  display.fillRect(43, 55, 4, 4, WHITE);
+  display.fillRect(84, 43, 4, 4, WHITE);
+  display.fillRect(84, 55, 4, 4, WHITE);
+  display.display();
+  delay(input);
+  display.drawRect(43, 43, 4, 4, WHITE);
+  display.drawRect(43, 55, 4, 4, WHITE);
+  display.drawRect(84, 43, 4, 4, WHITE);
+  display.drawRect(84, 55, 4, 4, WHITE);
+  display.display();
+  delay(input);
+}
