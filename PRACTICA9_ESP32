@@ -1,0 +1,29 @@
+/*
+ * very basic sketch for PLX DAQ test
+ * for new "Version 2" of PLX DAQ
+ */
+#define ADC_VREF_mV    3300.0 // in millivolt
+#define ADC_RESOLUTION 4096.0
+int i = 0;
+void setup() {
+
+  // open serial connection
+    Serial.begin(9600);
+  // define 2 rows: first named "Counter", second named "millis"
+    Serial.println("CLEARDATA");
+    Serial.println("LABEL,Time,Sensor1,Infrarojo,Sensor2,millis");
+}
+
+void loop() {
+  // simple print out of number and millis
+  // output "DATA,TIME,4711,13374"
+    Serial.print("DATA,TIME,");
+    delay(300);
+    Serial.print(analogRead(34)); Serial.print(",");
+   
+    Serial.print(analogRead(35)); Serial.print(",");
+    
+    Serial.print(analogRead(15));Serial.print(",");
+    Serial.println(i++);
+    delay(500);
+}
